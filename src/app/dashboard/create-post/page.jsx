@@ -32,42 +32,48 @@ export default function CreatePostPage() {
   const router = useRouter();
   console.log(formData);
 
-  const handleUpdloadImage = async () => {
-    try {
-      if (!file) {
-        setImageUploadError('Please select an image');
-        return;
-      }
-      setImageUploadError(null);
-      const storage = getStorage(app);
-      const fileName = new Date().getTime() + '-' + file.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImageUploadProgress(progress.toFixed(0));
-        },
-        (error) => {
-          setImageUploadError('Image upload failed');
-          setImageUploadProgress(null);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUploadProgress(null);
-            setImageUploadError(null);
-            setFormData({ ...formData, image: downloadURL });
-          });
-        }
-      );
-    } catch (error) {
-      setImageUploadError('Image upload failed');
-      setImageUploadProgress(null);
-      console.log(error);
+ const handleUpdloadImage = async () => {
+  try {
+    if (!file) {
+      setImageUploadError('Please select an image');
+      return;
     }
-  };
+
+    setImageUploadError(null);
+    setImageUploadProgress(0);
+
+    const data = new FormData();
+    data.append('file', file);
+
+    data.append('upload_preset', 'concur-blog');
+
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/dvly9amrf/image/upload',
+      {
+        method: 'POST',
+        body: data,
+      }
+    );
+
+    const uploadedImageURL = await res.json();
+
+    if (!res.ok) {
+      setImageUploadError('Image upload failed');
+      return;
+    }
+
+    setImageUploadProgress(null);
+
+    setFormData({
+      ...formData,
+      image: uploadedImageURL.secure_url,
+    });
+  } catch (error) {
+    console.log(error);
+    setImageUploadError('Image upload failed');
+    setImageUploadProgress(null);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
