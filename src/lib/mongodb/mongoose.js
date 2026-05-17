@@ -3,30 +3,32 @@ import mongoose from 'mongoose';
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('Please define MONGODB_URI in env');
+  throw new Error('Please define MONGODB_URI in .env');
 }
 
+// global cache (VERY IMPORTANT for Vercel)
 let cached = global.mongoose;
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-export async function connect() {
+export const connect = async () => {
+  mongoose.set('strictQuery', true);
+
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    const opts = {
+    cached.promise = mongoose.connect(MONGODB_URI, {
       dbName: 'concur_school',
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      maxPoolSize: 10, // important for serverless
+    }).then((mongoose) => {
       return mongoose;
     });
   }
 
   cached.conn = await cached.promise;
   return cached.conn;
-}
+};
