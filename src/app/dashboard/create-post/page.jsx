@@ -130,9 +130,10 @@ export default function CreatePostPage() {
               }
             >
               <option value='uncategorized'>Select a category</option>
-              <option value='javascript'>JavaScript</option>
-              <option value='reactjs'>React.js</option>
-              <option value='nextjs'>Next.js</option>
+              <option value='Expense'>Expense</option>
+<option value='Invoice'>Invoice</option>
+<option value='Request'>Request</option>
+<option value='Travel'>Travel</option>
             </Select>
           </div>
           <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
@@ -173,15 +174,33 @@ export default function CreatePostPage() {
             />
           )}
 
-          <ReactQuill
-            theme='snow'
-            placeholder='Write something...'
-            className='h-72 mb-12'
-            required
-            onChange={(value) => {
-              setFormData({ ...formData, content: value });
-            }}
-          />
+         <div className='flex flex-col gap-4'>
+  {/* Rich Text Editor */}
+  <ReactQuill
+    theme='snow'
+    placeholder='Write something...'
+    className='h-72 mb-12'
+    onChange={(value) => {
+      setFormData({
+        ...formData,
+        content: value,
+      });
+    }}
+  />
+
+  {/* HTML Editor */}
+  <textarea
+    placeholder='Or paste raw HTML here...'
+    className='w-full min-h-[300px] rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-sm'
+    value={formData.content || ''}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        content: e.target.value,
+      })
+    }
+  />
+</div>
           <Button type='submit' gradientDuoTone='purpleToPink'>
             Publish
           </Button>

@@ -42,9 +42,10 @@ export default function UpdatePost() {
           }),
         });
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         if (res.ok) {
           setFormData(data.posts[0]);
+          // console.log("formdata",formData)
         }
       } catch (error) {
         console.log(error.message);
@@ -147,23 +148,41 @@ const handleUpdloadImage = async () => {
               placeholder='Title'
               required
               id='title'
-              defaultValue={formData.title}
+             value={formData.title || ''}
               className='flex-1'
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
             />
-            <Select
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-              value={formData.category}
-            >
-              <option value='uncategorized'>Select a category</option>
-              <option value='javascript'>JavaScript</option>
-              <option value='reactjs'>React.js</option>
-              <option value='nextjs'>Next.js</option>
-            </Select>
+           <Select
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      category: e.target.value,
+    })
+  }
+  value={formData.category || 'uncategorized'}
+>
+  <option value='uncategorized'>
+    Select a category
+  </option>
+
+  <option value='Expense'>
+    Expense
+  </option>
+
+  <option value='Invoice'>
+    Invoice
+  </option>
+
+  <option value='Request'>
+    Request
+  </option>
+
+  <option value='Travel'>
+    Travel
+  </option>
+</Select>
           </div>
           <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
             <FileInput
@@ -201,16 +220,39 @@ const handleUpdloadImage = async () => {
               className='w-full h-72 object-cover'
             />
           )}
-          <ReactQuill
-            theme='snow'
-            placeholder='Write something...'
-            className='h-72 mb-12'
-            required
-            value={formData.content}
-            onChange={(value) => {
-              setFormData({ ...formData, content: value });
-            }}
-          />
+
+
+
+ <div className='flex flex-col gap-4'>
+  {/* Rich Text Editor */}
+  <ReactQuill
+    theme='snow'
+    placeholder='Write something...'
+    className='h-72 mb-12'
+   onChange={(value) => {
+    setFormData({
+      ...formData,
+      content: value,
+    });
+  }}
+  />
+
+  {/* HTML Editor */}
+  <textarea
+    placeholder='Or paste raw HTML here...'
+    className='w-full min-h-[300px] rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-sm'
+    value={formData.content || ''}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        content: e.target.value,
+      })
+    }
+  />
+</div>
+
+
+     
           <Button type='submit' gradientDuoTone='purpleToPink'>
             Update
           </Button>

@@ -131,7 +131,7 @@ export default function Search() {
               placeholder='Search...'
               id='searchTerm'
               type='text'
-              value={sidebarData.searchTerm}
+              value={sidebarData?.searchTerm || ""}
               onChange={handleChange}
             />
           </div>
@@ -145,10 +145,10 @@ export default function Search() {
           <div className='flex items-center gap-2'>
             <label className='font-semibold'>Category:</label>
             <Select onChange={handleChange} id='category'>
-              <option value='uncategorized'>Uncategorized</option>
-              <option value='reactjs'>React.js</option>
-              <option value='nextjs'>Next.js</option>
-              <option value='javascript'>JavaScript</option>
+            <option value='Expense'>Expense</option>
+<option value='Invoice'>Invoice</option>
+<option value='Request'>Request</option>
+<option value='Travel'>Travel</option>
             </Select>
           </div>
           <Button type='submit' outline gradientDuoTone='purpleToPink'>
