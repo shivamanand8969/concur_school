@@ -3,13 +3,14 @@ import { connect } from '../../../../lib/mongodb/mongoose';
 import { currentUser } from '@clerk/nextjs/server';
 
 export const POST = async (req) => {
-  const user = await currentUser();
-
+  
   try {
     await connect();
+    const user = await currentUser();
+
     const data = await req.json();
 
-    if (!user.publicMetadata.isAdmin) {
+    if (!user?.publicMetadata?.isAdmin) {
       return new Response('Unauthorized', { status: 401 });
     }
 
